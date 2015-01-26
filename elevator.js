@@ -11,6 +11,8 @@
     
     init: function(elevators, floors) {
 
+        var idleFloorQueue = [];
+
         //iterate through all elevators
         for (var i = 0; i < elevators.length; i++) {
 
@@ -20,29 +22,46 @@
                 
                 //basic loop for going to all floors, from bottom to top
                 for (var j = 0; j < floors.length; j++) {
-                    this.goToFloor(j);   
+                    this.goToFloor(_updateFloorQueue());
                 }
             });
 
             //button press event listener
             elevators[i].on("floor_button_pressed", function(floorNum) {
-
-                
+                _updateFloorQueue(floorNum);
             } );
- 
+            
+            /*helper for managing floor queue
+            returns next floor in queue, or ground floor if none available.
+            TODO: should probably have a queue per elevator, and assign to queue
+            based on direction of elecator and proximity to floor being called
+            also, idle elevators should stagger from middle, high and low, or something like that
+            */
+            _updateFloorQueue = function(floor) {
+
+                if (floor) {
+                    idleFloorQueue.push(floor);
+                    idleFloorQueue.sort();
+                    return floor;
+                } else {
+                    if (idleFloorQueue.length == 0) {
+                        idleFloorQueue.push(0);
+                        return 0;
+                    } else {
+                        return idleFloorQueue.shift();
+                    }
+                }
+            }
+            
         }
         
         //iterate through all floors
         for(var i = 0; i < floors.length; i++) {
 
-            //event listener for press of up button
             floors[i].on('up_button_pressed', function() {
-
             });
 
-            //event flister for press of down button
             floors[i].on('down_button_pressed', function() {
-
             });
         }
     },
