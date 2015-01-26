@@ -59,9 +59,11 @@
         for(var i = 0; i < floors.length; i++) {
 
             floors[i].on('up_button_pressed', function() {
+                _updateFloorQueue(this.level);
             });
 
             floors[i].on('down_button_pressed', function() {
+                _updateFloorQueue(this.level);
             });
         }
     },
